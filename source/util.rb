@@ -49,20 +49,28 @@ def getDocDate(text)
     date = date.gsub('  ', ' ')
     splitedDate = date.split(" ")
 
-  if(splitedDate[2] != nil)
-    year = splitedDate[2]
-  end    
+    if(splitedDate[2] != nil)
+      year = splitedDate[2]
+    else
+      return "no_date"
+	end    
   
     if(splitedDate[1] != nil)
       month = getNumMonth(splitedDate[1])
-    end
+    else
+      return "no_date"
+	end
 
     if(splitedDate[0] != nil)
       day = splitedDate[0]
       if day.to_i < 10
         day = "0" + day
       end
+	else
+      return "no_date"
     end
+  else
+    return "no_date"
   end
 
   result = year + "-" + month + "-" + day
@@ -89,23 +97,19 @@ end
 
 
 def saveDocument(urlDoc, localPath, docName)
-  #example
-  #url = "http://www.minhap.gob.es/Documentacion/Publico/D.G.%20PATRIMONIO/Junta%20Consultiva/informes/Informes%201990-1994/contratos%20de%20consultoria%20y%20asistencia,%20de%20servicios%20y%20trabajos%20especificos/Informe%206-90.pdf"
   urlFile = localPath + "/" + docName
-  
-  #Probar con URI.enconde o CGI.encode
   urlDoc = encodeReplace(urlDoc)  
   
   File.open(urlFile, "wb") do |saved_file|
     begin
-  # the following "open" is provided by open-uri
-    open(urlDoc, "rb") do |read_file|
-      saved_file.write(read_file.read)
-  end  
-  rescue 
-    puts "ERROR: Documento no disponible: " + urlDoc
-    return false  
-  end
+      ### The following "open" is provided by open-uri ###
+      open(urlDoc, "rb") do |read_file|
+        saved_file.write(read_file.read)
+    end  
+    rescue 
+      puts "ERROR: Documento no disponible: " + urlDoc
+      return false  
+    end
   end
   return true
 end
@@ -194,5 +198,10 @@ def createCompletedFile(path)
   out_file.close
 end
 
-path = File.dirname(__FILE__)
-createCompletedFile(path)
+def removeNumeration(text)
+  r = /\d*\.*\d*\.*\d*\.*/
+  if(r.match(text) != nil)
+    numeration = r.match(text)[0]
+	return text.sub(numeration, "")
+  end
+end

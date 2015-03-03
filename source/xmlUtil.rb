@@ -8,29 +8,32 @@ def createInfoXML(delivery_type, documents, localPath, fileName)
       xml.bulk_api_version "1.00"
       xml.delivery_type delivery_type
       xml.project_name "DP0079_informes_dictamenes_junta_contratacion_administrativa"
-      xml.source 12513
+      xml.source_id 12513
       xml.documents documents
       xml.content_provider "Daniel Orte"
       xml.content_provider_email "daniorte@gmail.com"
-      xml.source_id "http://www.minhap.gob.es/es-es/servicios/contratacion/junta%20consultiva%20de%20contratacion%20administrativa/informes/Paginas/default.aspx"
+      xml.source "http://www.minhap.gob.es/es-es/servicios/contratacion/junta%20consultiva%20de%20contratacion%20administrativa/informes/Paginas/default.aspx"
       xml.delivery_type delivery_type
       xml.fields do
         xml.field :name => "number", :type => "string"
         xml.field :name => "date", :type => "date"
         xml.field :name => "title", :type => "string"
         xml.field :name => "document_type", :type => "list" do
-        xml.valid_value :value_id => "01", :value_description => "Informe"
-        xml.valid_value :value_id => "02", :value_description => "Recomendacion"
-        xml.valid_value :value_id => "03", :value_description => "Acuerdo"
-        xml.valid_value :value_id => "04", :value_description => "Circular"
-      end
-      xml.field :name => "subject", :type => "list" do
-        xml.valid_value :value_id => "01", :value_description => "Cuestiones generales"
-        xml.valid_value :value_id => "02", :value_description => "Cuestiones Específicas de los distintos contratos"
-        xml.valid_value :value_id => "03", :value_description => "Informes sobre proyectos de disposiciones, recomendaciones, acuerdos y circulares"
-      end
+          xml.valid_value :value_id => "01", :value_description => "Informe"
+          xml.valid_value :value_id => "02", :value_description => "Recomendacion"
+          xml.valid_value :value_id => "03", :value_description => "Acuerdo"
+          xml.valid_value :value_id => "04", :value_description => "Circular"
         end
-        xml.selfclosing
+        xml.field :name => "subject", :type => "list" do
+          xml.valid_value :value_id => "01", :value_description => "Cuestiones generales"
+          xml.valid_value :value_id => "02", :value_description => "Cuestiones Específicas de los distintos contratos"
+          xml.valid_value :value_id => "03", :value_description => "Informes sobre proyectos de disposiciones, recomendaciones, acuerdos y circulares"
+        end
+		xml.field :name => "sub_subject", :type => "string"
+		xml.field :name => "specific_subject", :type => "string"
+		xml.field :name => "url", :type => "string"
+      end
+      xml.selfclosing
     end
   }.to_xml
 
@@ -40,14 +43,16 @@ def createInfoXML(delivery_type, documents, localPath, fileName)
 end
 
 
-def createMetadataXML(docNumber, date, title, documentType, valueIdDT, subject, valueIdS, id, url, localPath, fileName)
+def createMetadataXML(docNumber, date, title, document_type, valueIdDT, subSubject, specificSubject, valueIdS, id, url, localPath, fileName)
   xml = Nokogiri::XML::Builder.new(:encoding => "UTF-8") { |xml| 
     xml.document do
       xml.number docNumber
       xml.date date
       xml.title title
-      xml.documentType documentType, :value_id => valueIdDT
-      xml.subject subject, :value_id => valueIdS
+      xml.document_type valueIdDT
+      xml.subject valueIdS
+	  xml.sub_subject subSubject
+	  xml.specific_subject specificSubject
       xml.id id
       xml.url url
     end
@@ -90,14 +95,3 @@ def loadLogBook(filePath)
   f.close
   return logBook
 end
-
-#############TEST###############
-#_path = File.dirname(__FILE__)
-#categoriesDates = Hash.new("categorias-fechas")
-#categoriesDates["1"] = "12-05-2000"
-#categoriesDates["2"] = "11-03-2010"
-#categoriesDates["3"] = "21-12-2011"
-#categoriesDates["4"] = "02-04-2009"
-#categoriesDates["5"] = "07-09-2011"
-#createCategoriesDatesXML(categoriesDates, _path)
-#loadLogBook(_path)

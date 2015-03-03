@@ -2,6 +2,6 @@
 
 # -*- ENCODING: UTF-8 -*-
 
-ruby main.rb
+ruby ../source/main.rb
 
 exit

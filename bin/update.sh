@@ -2,6 +2,6 @@
 
 # -*- ENCODING: UTF-8 -*-
 
-ruby main.rb update logbook.xml
+ruby ../source/main.rb update logbook.xml
 
 exit
